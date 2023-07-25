@@ -1,7 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap");
+
+:root {
+  --dark-blue: hsl(212deg 24% 26%);
+  --grayish-blue: hsl(211deg 10% 45%);
+  --light-gray: hsl(223deg 19% 93%);
+  --very-light-gray: hsl(228deg 33% 97%);
+  --white: hsl(0deg 0% 100%);
+  --moderate-blue: hsl(238deg 40% 52%);
+  --soft-red: hsl(358deg 79% 66%);
+  --light-grayish-blue: hsl(239deg 57% 85%);
+  --pale-red: hsl(357deg 100% 86%);
+  --rubik: "Rubik", sans-serif;
+}
+
 h1,
 h2,
 .red {
-	color: red;
-	border: 1px solid firebrick;
-	background: green;
+  color: red;
+  border: 1px solid firebrick;
+  background: green;
 }
