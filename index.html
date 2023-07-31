@@ -1,123 +1,36 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="interactive comment section" />
-    <meta property="og:title" content="INTERACTIVE COMMENT" />
-    <meta
-      property="og:description"
-      content="This a demo interaction between user in the comment section"
-    />
-    <meta property="og:image" content="./design/active-states.jpg" />
-    <link rel="stylesheet" href="./css/index.css" />
-    <script src="./js/index.js" defer></script>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="interactive comment section" />
+		<meta property="og:title" content="INTERACTIVE COMMENT" />
+		<meta
+			property="og:description"
+			content="This a demo interaction between user in the comment section" />
+		<meta property="og:image" content="./design/active-states.jpg" />
+		<link rel="stylesheet" href="./css/index.css" />
+		<script src="./js/index.js" defer></script>
 
-    <title>Document</title>
-  </head>
-  <body class="">
-    <main class="main bg-light-gray">
-      <div class="post-interaction">
-        <article class="post bg-white">
-          <div class="headings d-flex ai-c">
-            <img
-              src="./images/avatars/image-amyrobson.webp"
-              alt="amyrobson profile image"
-              class="user-image"
-            />
-            <h3 class="user-name">amyrobson</h3>
-            <p class="time text">1 months ago</p>
-          </div>
-          <p class="comment text">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-            veritatis possimus cum dolore quia sapiente earum! Nihil sint eius
-            deserunt.
-          </p>
-          <div class="buttons d-flex jc-sb ai-c">
-            <div class="votes-btn d-flex jc-sb ai-c">
-              <button type="button" class="upvote btn">+</button>
-              <p class="vote">12</p>
-              <button type="button" class="downvote btn">-</button>
-            </div>
-            <button type="button" class="btn reply-btn">
-              <span class="icon">i</span>reply
-            </button>
-          </div>
-        </article>
-        <div class="reply-comment d-flex">
-          <div class="vertical-line"></div>
-          <div>
-            <article class="replied post bg-white">
-              <div class="headings d-flex ai-c">
-                <img
-                  src="./images/avatars/image-amyrobson.webp"
-                  alt="amyrobson profile image"
-                  class="user-image"
-                />
-                <h3 class="user-name">amyrobson</h3>
-                <p class="time text">1 months ago</p>
-              </div>
-              <p class="comment text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-                veritatis possimus cum dolore quia sapiente earum! Nihil sint
-                eius deserunt.
-              </p>
-              <div class="buttons d-flex jc-sb ai-c">
-                <div class="votes-btn d-flex jc-sb ai-c">
-                  <button type="button" class="upvote btn">+</button>
-                  <p class="vote">12</p>
-                  <button type="button" class="downvote btn">-</button>
-                </div>
-                <button type="button" class="btn reply-btn">
-                  <span class="icon">i</span>reply
-                </button>
-              </div>
-            </article>
-            <article class="replied post bg-white">
-              <div class="headings d-flex ai-c">
-                <img
-                  src="./images/avatars/image-amyrobson.webp"
-                  alt="amyrobson profile image"
-                  class="user-image"
-                />
-                <h3 class="user-name">amyrobson</h3>
-                <p class="time text">1 months ago</p>
-              </div>
-              <p class="comment text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-                veritatis possimus cum dolore quia sapiente earum! Nihil sint
-                eius deserunt.
-              </p>
-              <div class="buttons d-flex jc-sb ai-c">
-                <div class="votes-btn d-flex jc-sb ai-c">
-                  <button type="button" class="upvote btn">+</button>
-                  <p class="vote">12</p>
-                  <button type="button" class="downvote btn">-</button>
-                </div>
-                <button type="button" class="btn reply-btn">
-                  <span class="icon">i</span>reply
-                </button>
-              </div>
-            </article>
-          </div>
-        </div>
-      </div>
-      <form class="comment-form bg-white">
-        <input
-          type="text"
-          name="comment"
-          placeholder="Add comment"
-          class="comment-text"
-        />
-        <div class="d-flex ai-c jc-sb">
-          <img
-            src="./images/avatars/image-juliusomo.webp"
-            alt="the account user image"
-            class="user-image"
-          />
-          <button type="submit" class="add-comment">Send</button>
-        </div>
-      </form>
-    </main>
-  </body>
+		<title>Document</title>
+	</head>
+	<body class="">
+		<main class="main bg-light-gray container"> </main>
+		<div class="form-container bg-light-gray">
+			<form class="comment-form bg-white">
+				<input
+					type="text"
+					name="comment"
+					placeholder="Add comment"
+					class="comment-text" />
+				<div class="d-flex ai-c jc-sb">
+					<img
+						src="./images/avatars/image-juliusomo.webp"
+						alt="the account user image"
+						class="user-image" />
+					<button type="submit" class="add-comment">Send</button>
+				</div>
+			</form>
+		</div>
+	</body>
 </html>
