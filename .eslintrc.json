@@ -13,8 +13,9 @@
   "rules": {
     "linebreak-style": 0,
     "no-unused-vars": "warn",
-    "no-console": "off",
+    "no-console": "warn",
     "class-methods-use-this": "warn",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "func-names": "off"
   }
 }

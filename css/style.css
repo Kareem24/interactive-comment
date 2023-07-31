@@ -15,8 +15,8 @@
 
 .main {
 	min-height: 100vh;
-	width: 100%;
 	padding: 3rem 1.5rem;
+	width: 100%;
 }
 
 .main .post-interaction {
@@ -86,5 +86,10 @@
 
 .reply-comment .vertical-line {
 	min-height: 100%;
-	border: 1px solid red;
+	border: 0.5px solid var(--grayish-blue);
+}
+
+.form-container {
+	padding: 3rem 1.5rem;
+	width: 100%;
 }
