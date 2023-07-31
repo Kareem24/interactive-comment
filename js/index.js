@@ -1,10 +1,22 @@
-const getElement = function (selector, isList) {
+const getElement = function (selector, isList = false) {
   if (isList) return document.querySelectorAll(selector);
-
   return document.querySelector(selector);
 };
-const commentContainer = getElement(".container", false);
-const createComment = function (users) {
+
+const commentContainer = getElement(".container");
+const submitBtn = getElement(".add-comment");
+const commentText = getElement(".comment-text");
+const getData = async function () {
+  const response = await fetch("../data.json");
+  const data = await response.json();
+  localStorage.setItem("data", JSON.stringify(data));
+};
+const getComments = () =>
+  localStorage.getItem("data")
+    ? JSON.parse(localStorage.getItem("data"))
+    : getData();
+
+const createComment = function (users, name = "") {
   const { content, score, user, createdAt } = users;
   return `
     <div class="post-interaction">
@@ -12,12 +24,14 @@ const createComment = function (users) {
 					<div class="headings d-flex ai-c">
 						<img
 							src=".${user.image.webp}"
-							alt="amyrobson profile image"
+            alt="${user.username} profile image"
 							class="user-image" />
 						<h3 class="user-name">${user.username}</h3>
 						<p class="time text">${createdAt} </p>
 					</div>
-					<p class="comment text">${content} </p>
+					<p class="comment text"><span class='mention-user'>${
+            name ? "@" : ""
+          }${name}</span> ${content} </p>
 					<div class="buttons d-flex jc-sb ai-c">
 						<div class="votes-btn d-flex jc-sb ai-c">
 							<button type="button" class="upvote btn">+</button>
@@ -32,30 +46,54 @@ const createComment = function (users) {
         
         </div>`;
 };
-
-const getData = async function () {
-  const response = await fetch("../data.json");
-  const data = await response.json();
-  const { currentUser, comments } = data;
+const loadPage = function () {
+  const data = getComments();
+  const { comments } = data;
   const post = comments.map((person) => createComment(person)).join(" ");
   commentContainer.insertAdjacentHTML("beforeend", post);
-  // console.log(post);
-  const reply = comments.map(({ replies }) => replies);
-
+  const reply = comments.reduce((newReplies, users) => {
+    const {
+      replies,
+      user: { username },
+    } = users;
+    newReplies.push({ replies, username });
+    return newReplies;
+  }, []);
+  // const reply = comments.map(({ replies, user }) => replies);
   const posts = getElement(".post-interaction", true);
-
   posts.forEach((singlePost, i) => {
-    const repliedComment = reply[i]
+    const repliedComment = reply[i].replies
       .map(
-        (singlereply) => `<div class="reply-comment d-flex">
+        (singleReply) =>
+          `<div class="reply-comment d-flex">
   				<div class="vertical-line"></div>
-  					${createComment(singlereply)}
-  			</div>`,
+  				${createComment(singleReply, reply[i].username)}
+  		  </div>`,
       )
       .join("");
     singlePost.insertAdjacentHTML("beforeend", repliedComment);
   });
-
-  // posts.forEach((comment) => comment.insertAdjacentHTML('beforeend', reply))
 };
-getData();
+
+const addComment = (e) => {
+  e.preventDefault();
+  const data = getComments();
+  const { value } = commentText;
+  const id = new Date().getTime().toString();
+  const { currentUser } = data;
+  const content = value;
+  const newComment = {
+    id,
+    // eslint-disable-next-line new-cap
+    createdAt: new Date().getUTCDay(),
+    score: 0,
+    replies: [],
+    content,
+    user: currentUser,
+  };
+  data.comments.push(newComment);
+  localStorage.setItem("data", JSON.stringify(data));
+};
+
+window.addEventListener("DOMContentLoaded", loadPage);
+submitBtn.addEventListener("click", addComment);

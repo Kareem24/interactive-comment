@@ -40,6 +40,11 @@
 	margin: 16px 0;
 }
 
+.post .mention-user{
+	font-weight: 500;
+	color:var(--moderate-blue)
+}
+
 .buttons {
 	margin: 16px auto 0;
 }
