@@ -2,19 +2,10 @@ const getElement = function (selector, isList = false) {
   if (isList) return document.querySelectorAll(selector);
   return document.querySelector(selector);
 };
-
 const commentContainer = getElement(".container");
 const submitBtn = getElement(".add-comment");
 const commentText = getElement(".comment-text");
-const getData = async function () {
-  const response = await fetch("../data.json");
-  const data = await response.json();
-  localStorage.setItem("data", JSON.stringify(data));
-};
-const getComments = () =>
-  localStorage.getItem("data")
-    ? JSON.parse(localStorage.getItem("data"))
-    : getData();
+const getComments = () => JSON.parse(localStorage.getItem("data"));
 
 const createComment = function (users, name = "") {
   const { content, score, user, createdAt } = users;
@@ -46,8 +37,7 @@ const createComment = function (users, name = "") {
         
         </div>`;
 };
-const loadPage = function () {
-  const data = getComments();
+const loadPage = (data) => {
   const { comments } = data;
   const post = comments.map((person) => createComment(person)).join(" ");
   commentContainer.insertAdjacentHTML("beforeend", post);
@@ -77,7 +67,7 @@ const loadPage = function () {
 
 const addComment = (e) => {
   e.preventDefault();
-  const data = getComments();
+  const data = JSON.parse(localStorage.getItem("data"));
   const { value } = commentText;
   const id = new Date().getTime().toString();
   const { currentUser } = data;
@@ -94,6 +84,22 @@ const addComment = (e) => {
   data.comments.push(newComment);
   localStorage.setItem("data", JSON.stringify(data));
 };
+const getData = async function () {
+  try {
+    let data;
+    if (localStorage.getItem("data")) {
+      data = getComments();
+    } else {
+      const response = await fetch("../data.json");
+      data = await response.json();
+      localStorage.setItem("data", JSON.stringify(data));
+    }
 
-window.addEventListener("DOMContentLoaded", loadPage);
+    loadPage(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+window.addEventListener("DOMContentLoaded", getData);
 submitBtn.addEventListener("click", addComment);
