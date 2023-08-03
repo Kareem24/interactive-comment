@@ -31,18 +31,37 @@
 	border-radius: 8px;
 	padding: 0.5rem 1rem;
 	max-width: 50rem;
-	margin: auto;
 	margin: 0 auto 24px;
 }
 
 .post .headings {
-	gap: 30px;
+	gap: 15px;
 	margin: 16px 0;
 }
 
-.post .mention-user{
+.headings h3 {
+	font-size: 1.2rem;
+}
+
+.headings .tag {
+	width: 40px;
+	height: 24px;
+	color: var(--white);
+	background: var(--moderate-blue);
+	border-radius: 4px;
+}
+
+.headings p {
+	font-size: 1rem;
+}
+
+.headings .text {
+	font-size: 0.8rem;
+}
+
+.post .mention-user {
 	font-weight: 500;
-	color:var(--moderate-blue)
+	color: var(--moderate-blue);
 }
 
 .buttons {
@@ -61,8 +80,18 @@
 	font-size: 1.2rem;
 }
 
-.buttons .reply-btn {
-	color: var(--moderate-blue);
+.buttons .owner-btn {
+	gap: 16px;
+}
+
+.buttons .reply-btn,
+.buttons .delete-btn,
+.buttons .edit-btn {
+	gap: 4px;
+}
+
+.buttons .delete-btn {
+	color: var(--soft-red);
 }
 
 .comment-form .comment-text {
@@ -74,7 +103,7 @@
 	margin: 24px auto;
 }
 
-.comment-form .add-comment {
+.comment-form .submit-comment {
 	background: var(--moderate-blue);
 	padding: 1rem 1.5rem;
 	border: none;
@@ -83,6 +112,7 @@
 	font-weight: 500;
 	font-size: 20px;
 	margin-bottom: 20px;
+	cursor: pointer;
 }
 
 .reply-comment {

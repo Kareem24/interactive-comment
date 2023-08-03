@@ -8,3 +8,8 @@
 li {
 	list-style-type: none;
 }
+
+img,
+picture {
+	display: block;
+}
