@@ -17,6 +17,19 @@
   </head>
   <body>
     <main class="main bg-light-gray container"></main>
+    <div class="modal ai-c d-none">
+      <div class="modal-content bg-white">
+        <h2 class="modal-heading">Delete comment</h2>
+        <p class="modal-description">
+          Are you sure you want to delete this comment? This will remove the
+          comment and can't be undone
+        </p>
+        <div class="buttons d-flex ai-c jc-sb">
+          <button type="button" class="btn btn-cancel">No,cancel</button>
+          <button type="button" class="btn btn-delete">Yes,delete</button>
+        </div>
+      </div>
+    </div>
     <div class="form-container bg-light-gray">
       <form class="comment-form bg-white">
         <input

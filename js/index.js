@@ -6,6 +6,8 @@ const commentContainer = getElement(".container");
 const submitBtn = getElement(".submit-comment");
 const commentText = getElement(".comment-text");
 const getComments = () => JSON.parse(localStorage.getItem("data"));
+const modal = getElement(".modal");
+const cancelDelete = getElement(".btn-cancel");
 
 const createComment = function (users, name = "") {
   const { content, score, user, createdAt, id } = users;
@@ -83,6 +85,15 @@ const loadPage = (data) => {
     singlePost.insertAdjacentHTML("beforeend", repliedComment);
   });
 };
+const showModal = () => {
+  modal.classList.add("d-flex");
+  modal.classList.remove("d-none");
+};
+const closeModal = () => {
+  modal.classList.add("d-none");
+  modal.classList.remove("d-flex");
+};
+
 const deleteFromStorage = (id) => {
   const data = getComments();
   const { comments } = data;
@@ -106,13 +117,20 @@ const deleteReply = (id) => {
 
 const deleteComment = (e) => {
   const currtarget = e.target;
+
   if (currtarget.classList.contains("delete-btn")) {
     const parent =
       currtarget.parentElement.parentElement.parentElement.parentElement;
-    parent.remove();
-    const { id } = parent.dataset;
-    deleteReply(parseInt(id, 10));
-    deleteFromStorage(parseInt(id, 10));
+    const deleteBtn = getElement(".btn-delete");
+
+    showModal();
+    deleteBtn.addEventListener("click", () => {
+      parent.remove();
+      const { id } = parent.dataset;
+      deleteFromStorage(id);
+      deleteReply(parseInt(id, 10));
+      closeModal();
+    });
   }
 };
 const addCommentUI = (comment) => {
@@ -166,3 +184,4 @@ const getData = async function () {
 window.addEventListener("DOMContentLoaded", getData);
 submitBtn.addEventListener("click", addComment);
 commentContainer.addEventListener("click", deleteComment);
+cancelDelete.addEventListener("click", closeModal);
