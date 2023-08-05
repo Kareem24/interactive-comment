@@ -73,14 +73,14 @@ body {
 
 .main {
 	min-height: 100vh;
-	padding: 3rem 1.5rem;
+	padding: 1rem 1.5rem;
 	width: 100%;
 }
 
 .main .post-interaction {
 	max-width: 50rem;
-	padding: 1rem;
-	margin: auto;
+	padding: 0 1rem;
+	margin: 0 auto;
 }
 
 .main .post,
@@ -152,6 +152,17 @@ body {
 	color: var(--soft-red);
 }
 
+.delete-btn:hover {
+	color: var(--pale-red);
+}
+
+.edit-btn:disabled,
+.edit-btn:hover,
+.reply-btn:disabled,
+.reply-btn:hover {
+	color: var(--light-grayish-blue);
+}
+
 .comment-form .comment-text {
 	width: 100%;
 	height: 80px;
@@ -159,18 +170,6 @@ body {
 	padding: 0.5rem 1rem;
 	border: 1px solid var(--light-grayish-blue);
 	margin: 24px auto;
-}
-
-.comment-form .submit-comment {
-	background: var(--moderate-blue);
-	padding: 1rem 1.5rem;
-	border: none;
-	border-radius: 8px;
-	color: var(--white);
-	font-weight: 500;
-	font-size: 20px;
-	margin-bottom: 20px;
-	cursor: pointer;
 }
 
 .reply-comment {
@@ -183,6 +182,18 @@ body {
 }
 
 .form-container {
-	padding: 3rem 1.5rem;
+	padding: 1.5rem;
 	width: 100%;
+}
+
+.submit-comment {
+	background: var(--moderate-blue);
+	padding: 1rem 1.5rem;
+	border: none;
+	border-radius: 8px;
+	color: var(--white);
+	font-weight: 500;
+	font-size: 20px;
+	margin-bottom: 20px;
+	cursor: pointer;
 }

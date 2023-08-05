@@ -8,11 +8,19 @@ const commentText = getElement(".comment-text");
 const getComments = () => JSON.parse(localStorage.getItem("data"));
 const modal = getElement(".modal");
 const cancelDelete = getElement(".btn-cancel");
+// const el = document.createElement("div");
+// el.classList.add("post-interaction");
 
+const createElement = (element, ...className) => {
+  const el = document.createElement(element);
+  className.forEach((singlecClass) => el.classList.add(singlecClass));
+  return el;
+};
+const allCommentDiv = createElement("div", "post-interaction");
 const createComment = function (users, name = "") {
   const { content, score, user, createdAt, id } = users;
   return `
-    <div class="post-interaction" data-id= ${id}>
+    <div class="article-div" data-id= ${id}>
 				<article class="post bg-white">
 					<div class="headings d-flex ai-c">
 						<img
@@ -62,7 +70,9 @@ const createComment = function (users, name = "") {
 const loadPage = (data) => {
   const { comments } = data;
   const post = comments.map((person) => createComment(person)).join(" ");
-  commentContainer.insertAdjacentHTML("beforeend", post);
+
+  commentContainer.append(allCommentDiv);
+  allCommentDiv.insertAdjacentHTML("beforeend", post);
   const reply = comments.reduce((newReplies, users) => {
     const {
       replies,
@@ -71,7 +81,8 @@ const loadPage = (data) => {
     newReplies.push({ replies, username });
     return newReplies;
   }, []);
-  const posts = getElement(".post-interaction", true);
+
+  const posts = getElement(".article-div", true);
   posts.forEach((singlePost, i) => {
     const repliedComment = reply[i].replies
       .map(
@@ -133,12 +144,48 @@ const deleteComment = (e) => {
     });
   }
 };
+const editContent = (e) => {
+  const currTarget = e.target;
+  const form = createElement("form", "comment-form", "bg-white");
+
+  form.innerHTML = `<input
+          type="text"
+          name="comment"
+          placeholder="Add comment"
+          class="comment-text"
+        />
+        <div class="d-flex ai-c jc-sb">
+          <img
+            src="./images/avatars/image-juliusomo.webp"
+            alt="the account user image"
+            class="user-image"
+          />
+          <button type="submit" class="submit-comment">Update</button>
+        </div>`;
+  if (currTarget.classList.contains("edit-btn")) {
+    const parent =
+      currTarget.parentElement.parentElement.parentElement.parentElement;
+    parent.append(form);
+
+    currTarget.disabled = true;
+  }
+  const updateBtn = form.querySelector(".submit-comment");
+  updateBtn.addEventListener("click", (evt) => {
+    evt.preventDefault();
+    currTarget.disabled = false;
+    form.remove();
+  });
+};
+// select the edit button
+// get the parent element of the edit button
+// insert form after the parent elment
+// get the current tex as the form value
+// change the send button to update
 const addCommentUI = (comment) => {
-  const postInteraction = document.createElement("div");
-  postInteraction.classList.add("post-interaction");
-  postInteraction.setAttribute("data-id", comment.id);
-  postInteraction.innerHTML = createComment(comment);
-  commentContainer.append(postInteraction);
+  const commentDiv = createElement("div", "active-div");
+  commentDiv.setAttribute("data-id", comment.id);
+  commentDiv.innerHTML = createComment(comment);
+  allCommentDiv.append(commentDiv);
 };
 
 const addComment = (e) => {
@@ -183,5 +230,8 @@ const getData = async function () {
 
 window.addEventListener("DOMContentLoaded", getData);
 submitBtn.addEventListener("click", addComment);
-commentContainer.addEventListener("click", deleteComment);
+commentContainer.addEventListener("click", (e) => {
+  deleteComment(e);
+  editContent(e);
+});
 cancelDelete.addEventListener("click", closeModal);
