@@ -181,12 +181,16 @@ const createFormUI = (isEdit) => {
 
 const replyComment = (e) => {
   const currTarget = e.target;
+  const form = createFormUI(false);
   if (currTarget.classList.contains("reply-btn")) {
-    console.log("reply");
+    const parent =
+      currTarget.parentElement.parentElement.parentElement.parentElement
+        .parentElement;
+    parent.firstElementChild.append(form);
   }
 };
 
-const editComment = (e) => {
+const editComments = (e) => {
   const currTarget = e.target;
   const data = getComments();
   const { comments } = data;
@@ -199,57 +203,54 @@ const editComment = (e) => {
         .parentElement;
     const paragraph =
       currTarget.parentElement.parentElement.previousElementSibling;
-    if (parent.classList.contains("reply-comment")) {
-      parent.firstElementChild.append(form);
-      const { id } = parent.firstElementChild.dataset;
+    const formFocus = () => {
       currTarget.disabled = true;
       comment.focus();
       comment.value = paragraph.textContent;
+    };
+    const updateEdit = () => {
+      paragraph.textContent = comment.value;
+      currTarget.disabled = false;
+      form.remove();
+      setToStorage(data);
+    };
+    if (parent.classList.contains("reply-comment")) {
+      parent.firstElementChild.append(form);
+      const { id } = parent.firstElementChild.dataset;
+      formFocus();
 
-      updateBtn.addEventListener("click", (evt) => {
+      const editRepliedComment = (evt) => {
         evt.preventDefault();
-        if (comment.value === "") return;
-
+        if (!comment.value) return;
         comments.forEach(({ replies }) => {
           replies.forEach((reply) => {
             if (reply.id === +id) {
               // eslint-disable-next-line no-param-reassign
               reply.content = comment.value;
-              paragraph.textContent = comment.value;
-
-              setToStorage(data);
-              form.remove();
-              currTarget.disabled = false;
+              updateEdit();
             }
           });
         });
-      });
+      };
+
+      updateBtn.addEventListener("click", editRepliedComment);
 
       // commentText.focus();
     }
     if (parent.classList.contains("post-interaction")) {
-      parent.append(form);
-      const { id } =
-        currTarget.parentElement.parentElement.parentElement.parentElement
-          .dataset;
+      const el =
+        currTarget.parentElement.parentElement.parentElement.parentElement;
+      el.append(form);
+      const { id } = el.dataset;
 
-      currTarget.disabled = true;
-      comment.focus();
-      comment.value = paragraph.textContent;
-      updateBtn.addEventListener("click", (event) => {
+      formFocus();
+      const editRealComment = (event) => {
         event.preventDefault();
-        // change the text content of the paragph
-        paragraph.textContent = comment.value;
-        // change back to submit
-        updateBtn.textContent = "Submit";
-        currTarget.disabled = false;
-
-        // edit from local storage
+        if (!comment.value) return;
         comments.find((comt) => comt.id === id).content = comment.value;
-        comment.value = "";
-        setToStorage(data);
-        form.remove();
-      });
+        updateEdit();
+      };
+      updateBtn.addEventListener("click", editRealComment);
     }
   }
 };
@@ -306,7 +307,7 @@ window.addEventListener("DOMContentLoaded", getData);
 submitBtn.addEventListener("click", addComment);
 commentContainer.addEventListener("click", (e) => {
   deleteComment(e);
-  editComment(e);
+  editComments(e);
   replyComment(e);
 });
 cancelDelete.addEventListener("click", closeModal);
