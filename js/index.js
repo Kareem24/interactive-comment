@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 const getElement = function (selector, isList = false) {
   if (isList) return document.querySelectorAll(selector);
   return document.querySelector(selector);
@@ -5,10 +7,10 @@ const getElement = function (selector, isList = false) {
 const commentContainer = getElement(".container");
 const submitBtn = getElement(".submit-comment");
 const commentText = getElement(".comment-text");
-const getComments = () => JSON.parse(localStorage.getItem("data"));
 const modal = getElement(".modal");
 const cancelDelete = getElement(".btn-cancel");
 
+const getFromStorage = () => JSON.parse(localStorage.getItem("data"));
 const setToStorage = (data) =>
   localStorage.setItem("data", JSON.stringify(data));
 
@@ -19,8 +21,8 @@ const createElement = (element, ...className) => {
 };
 
 const allCommentDiv = createElement("div", "post-interaction");
-const createComment = function (users, name = "") {
-  const { content, score, user, createdAt, id } = users;
+const createComment = function (users) {
+  const { content, score, user, createdAt, id, replyingTo } = users;
   return `
     <div class="article-div" data-id= ${id}>
 				<article class="post bg-white">
@@ -30,16 +32,13 @@ const createComment = function (users, name = "") {
 							alt="${user.username} profile image"
 							class="user-image" />
 						<h3 class="user-name">${user.username}</h3>
-						<div class="tag ${
-              user.username === "juliusomo" ? "d-flex" : "d-none"
-            } ai-c jc-c">
+						<div class="tag ${user.username === "juliusomo" ? "d-flex" : "d-none"
+    } ai-c jc-c">
             <p>You</p>
             </div>
 						<p class="time text">${createdAt}</p>
 					</div>
-					<p class="comment text"><span class='mention-user'>${
-            name ? "@" : ""
-          }${name}</span> ${content} </p>
+					<p class="comment text"><span class='mention-user'>${replyingTo ? "@" : ""}${replyingTo || ''}</span> <span> ${content}</span> </p>
 					<div class="buttons d-flex jc-sb ai-c">
 						<div class="votes-btn d-flex jc-sb ai-c">
 							<button type="button" class="upvote btn"><img src="./images/icon-plus.svg" alt="the plus icon for the upvote btn" /></button>
@@ -47,14 +46,12 @@ const createComment = function (users, name = "") {
 							<button type="button" class="downvote btn"><img src="./images/icon-minus.svg" alt="the minus image for downvote" /></button>
 						</div>
             <div>
-						<button type="button" class="btn reply-btn  ai-c ${
-              user.username === "juliusomo" ? "d-none" : "d-flex"
-            }">
+						<button type="button" class="btn reply-btn  ai-c ${user.username === "juliusomo" ? "d-none" : "d-flex"
+    }">
 							<img src="./images/icon-reply.svg" alt="the reply icon" />Reply
 						</button></div>
-						<div class="owner-btn ${
-              user.username === "juliusomo" ? "d-flex" : "d-none"
-            } ai-c">
+						<div class="owner-btn ${user.username === "juliusomo" ? "d-flex" : "d-none"
+    } ai-c">
 							<button type="button" class="btn d-flex ai-c delete-btn"
 								><img
 									src="images/icon-delete.svg"
@@ -92,7 +89,7 @@ const loadPage = (data) => {
       .map(
         (singleReply) =>
           `<div class="reply-comment  d-flex">
-  				${createComment(singleReply, reply[i].username)}
+  				${createComment(singleReply)}
   				<div class="vertical-line"></div>
   		  </div>`,
       )
@@ -111,50 +108,56 @@ const closeModal = () => {
   modal.classList.remove("d-flex");
 };
 
-const deleteFromStorage = (id) => {
-  const data = getComments();
-  const { comments } = data;
-  const filteredComments = comments.filter((comment) => comment.id !== id);
-  data.comments = filteredComments;
-  setToStorage(data);
-};
-
-const deleteReply = (id) => {
-  const data = getComments();
-  const { comments } = data;
-  comments.forEach(({ replies }) => {
-    replies.forEach((reply) => {
-      if (reply.id === id) {
-        const index = replies.indexOf(reply);
-        replies.splice(index, 1);
-      }
-    });
-  });
-  setToStorage(data);
-};
-
 const confirmDelete = (el) => {
   el.remove();
-  const { id } = el.dataset;
-  deleteFromStorage(id);
-  deleteReply(parseInt(id, 10));
   closeModal();
 };
 
 const deleteComment = (e) => {
   const currtarget = e.target;
+  const deleteBtn = getElement(".btn-delete");
+  const data = getFromStorage();
+  const { comments } = data;
+  let parent
+  let el
+  let id
 
   if (currtarget.classList.contains("delete-btn")) {
-    const parent =
+    parent =
       currtarget.parentElement.parentElement.parentElement.parentElement;
-    const deleteBtn = getElement(".btn-delete");
+    el = parent.parentElement
+    id = parent.dataset.id
 
     showModal();
+
     deleteBtn.addEventListener("click", () => {
-      confirmDelete(parent);
+
+      if (el.classList.contains('post-interaction')) {
+
+        confirmDelete(parent)
+        const filteredComments = comments.filter((comment) => comment.id !== id);
+        data.comments = filteredComments;
+        setToStorage(data);
+        e.stopPropagation()
+        return
+
+      }
+      if (el.classList.contains('reply-comment')) {
+
+        confirmDelete(el)
+        comments.forEach(({ replies }) => {
+          replies.forEach((reply) => {
+            if (reply.id.toString() === id) {
+              const index = replies.indexOf(reply);
+              replies.splice(index, 1);
+            }
+          });
+        });
+        setToStorage(data);
+      }
     });
-  }
-};
+  };
+}
 
 const createFormUI = (isEdit) => {
   const form = createElement("form", "comment-form", "bg-white");
@@ -172,93 +175,13 @@ const createFormUI = (isEdit) => {
             alt="the account user image"
             class="user-image"
           />
-          <button type="submit" class="submit-comment">${
-            isEdit ? "Update" : "Submit"
-          }</button>
+          <button type="submit" class="submit-comment">${isEdit ? "Update" : "Submit"
+    }</button>
         </div>`;
   return form;
 };
-
-const replyComment = (e) => {
-  const currTarget = e.target;
-  const form = createFormUI(false);
-  if (currTarget.classList.contains("reply-btn")) {
-    const parent =
-      currTarget.parentElement.parentElement.parentElement.parentElement
-        .parentElement;
-    parent.firstElementChild.append(form);
-  }
-};
-
-const editComments = (e) => {
-  const currTarget = e.target;
-  const data = getComments();
-  const { comments } = data;
-  const form = createFormUI(true);
-  const comment = form.querySelector(".comment-text");
-  const updateBtn = form.querySelector(".submit-comment");
-  if (currTarget.classList.contains("edit-btn")) {
-    const parent =
-      currTarget.parentElement.parentElement.parentElement.parentElement
-        .parentElement;
-    const paragraph =
-      currTarget.parentElement.parentElement.previousElementSibling;
-    const formFocus = () => {
-      currTarget.disabled = true;
-      comment.focus();
-      comment.value = paragraph.textContent;
-    };
-    const updateEdit = () => {
-      paragraph.textContent = comment.value;
-      currTarget.disabled = false;
-      form.remove();
-      setToStorage(data);
-    };
-    if (parent.classList.contains("reply-comment")) {
-      parent.firstElementChild.append(form);
-      const { id } = parent.firstElementChild.dataset;
-      formFocus();
-
-      const editRepliedComment = (evt) => {
-        evt.preventDefault();
-        if (!comment.value) return;
-        comments.forEach(({ replies }) => {
-          replies.forEach((reply) => {
-            if (reply.id === +id) {
-              // eslint-disable-next-line no-param-reassign
-              reply.content = comment.value;
-              updateEdit();
-            }
-          });
-        });
-      };
-
-      updateBtn.addEventListener("click", editRepliedComment);
-
-      // commentText.focus();
-    }
-    if (parent.classList.contains("post-interaction")) {
-      const el =
-        currTarget.parentElement.parentElement.parentElement.parentElement;
-      el.append(form);
-      const { id } = el.dataset;
-
-      formFocus();
-      const editRealComment = (event) => {
-        event.preventDefault();
-        if (!comment.value) return;
-        comments.find((comt) => comt.id === id).content = comment.value;
-        updateEdit();
-      };
-      updateBtn.addEventListener("click", editRealComment);
-    }
-  }
-};
-
-const addComment = (e) => {
-  e.preventDefault();
-  const data = JSON.parse(localStorage.getItem("data"));
-  const { value } = commentText;
+const createCommentObj = function (value, isReply = false, user = '') {
+  const data = getFromStorage();
   if (!value) return;
   const id = new Date().getTime().toString();
   const { currentUser } = data;
@@ -279,31 +202,143 @@ const addComment = (e) => {
     content,
     user: currentUser,
   };
+  if (isReply) {
+    delete newComment.replies
+    newComment.replyingTo = user
+  }
+  return newComment
+}
+const formFocus = (btn, input, paragraph) => {
+  btn.disabled = true;
+  input.focus();
+  input.value = paragraph?.textContent || '';
+};
+
+const replyComment = (e) => {
+  const currTarget = e.target;
+  const form = createFormUI(false);
+  const updateBtn = form.querySelector(".submit-comment");
+  const comment = form.querySelector(".comment-text");
+  const data = getFromStorage()
+  const { comments } = data
+  let user;
+  let parent;
+  let id;
+  let el;
+  if (currTarget.classList.contains('reply-btn')) {
+    parent = currTarget.parentElement.parentElement.parentElement.parentElement
+    parent.append(form)
+    id = parent.dataset.id
+    el = parent.parentElement
+
+    if (el.classList.contains('post-interaction')) {
+      user = comments.find((person) => person.id === +id).user.username
+    } else {
+      user = comments.map(({ replies }) => replies).flat().find((reply) => reply.id.toString() === id).user.username
+    };
+    formFocus(currTarget, comment)
+  }
+  updateBtn.addEventListener('click', (evt) => {
+    evt.preventDefault()
+    currTarget.disabled = false;
+    const { value } = comment;
+    if (!value) return;
+
+    const reply = createCommentObj(value, true, user)
+    const html = `<div class="reply-comment  d-flex">
+  				${createComment(reply, user)}
+  				<div class="vertical-line"></div>
+  		  </div>`
+
+    if (el.classList.contains('post-interaction')) {
+      parent.insertAdjacentHTML("beforeend", html)
+
+      comments.find((person) => person.id === +id).replies.push(reply)
+      setToStorage(data)
+
+    } else {
+      const container = parent.parentElement.parentElement
+      container.insertAdjacentHTML("beforeend", html)
+      id = container.dataset.id
+      reply.replyingTo = user
+      comments.find((person) => person.id === +id).replies.push(reply)
+      setToStorage(data)
+    }
+    form.remove()
+
+
+  })
+};
+
+const editComments = (e) => {
+  const currTarget = e.target;
+  const data = getFromStorage();
+  const { comments } = data;
+  const form = createFormUI(true);
+  const comment = form.querySelector(".comment-text");
+  const updateBtn = form.querySelector(".submit-comment");
+
+  let parent
+  let el
+  let paragraph
+  let id
+  if (currTarget.classList.contains('edit-btn')) {
+    parent = currTarget.parentElement.parentElement.parentElement.parentElement
+    el = parent.parentElement;
+    id = parent.dataset.id
+    paragraph = currTarget.parentElement.parentElement.previousElementSibling.lastElementChild
+    parent.append(form)
+    formFocus(currTarget, comment, paragraph)
+  }
+  updateBtn.addEventListener('click', (evt) => {
+    evt.preventDefault()
+    if (!comment.value) return;
+    paragraph.textContent = comment.value
+
+    if (el.classList.contains('post-interaction')) {
+      comments.find((person) => person.id === id).content = comment.value
+      setToStorage(data)
+    } else {
+      comments.map(({ replies }) => replies).flat().find((reply) => reply.id.toString() === id).content = comment.value;
+      setToStorage(data)
+    }
+    currTarget.disabled = false
+    form.remove()
+  })
+
+};
+
+const addComment = (e) => {
+  e.preventDefault();
+  const data = getFromStorage();
+  const { value } = commentText;
+
+  const newComment = createCommentObj(value)
   data.comments.push(newComment);
   allCommentDiv.insertAdjacentHTML("beforeend", createComment(newComment));
-
-  localStorage.setItem("data", JSON.stringify(data));
+  setToStorage(data)
   commentText.value = "";
 };
 
-const getData = async function () {
+const fetchData = async function () {
   try {
     let data;
     if (localStorage.getItem("data")) {
-      data = getComments();
+      data = getFromStorage();
     } else {
       const response = await fetch("../data.json");
       data = await response.json();
-      localStorage.setItem("data", JSON.stringify(data));
+      setToStorage(data);
     }
 
     loadPage(data);
   } catch (err) {
-    console.log(err);
+    // eslint-disable-next-line no-console
+    console.error(err);
   }
 };
 
-window.addEventListener("DOMContentLoaded", getData);
+window.addEventListener("DOMContentLoaded", fetchData);
 submitBtn.addEventListener("click", addComment);
 commentContainer.addEventListener("click", (e) => {
   deleteComment(e);
