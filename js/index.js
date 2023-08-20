@@ -39,14 +39,15 @@ const createComment = function (users) {
             </div>
 						<p class="time text">${createdAt}</p>
 					</div>
-					<p class="comment text"><span class='mention-user'>${replyingTo ? "@" : ""}${
-            replyingTo || ""
-          }</span> <span> ${content}</span> </p>
+					
           <div class="votes-btn d-flex jc-sb ai-c">
             <button type="button" class="upvote btn"><img src="./images/icon-plus.svg" alt="the plus icon for the upvote btn" /></button>
             <p class="vote">${score}</p>
             <button type="button" class="downvote btn"><img src="./images/icon-minus.svg" alt="the minus image for downvote" /></button>
           </div>
+          <p class="comment text"><span class='mention-user'>${
+            replyingTo ? "@" : ""
+          }${replyingTo || ""}</span> <span> ${content}</span> </p>
 					<div class="buttons d-flex jc-sb ai-c">
             <div>
 						<button type="button" class="btn reply-btn  ai-c ${
@@ -106,11 +107,13 @@ const loadPage = (data) => {
 const showModal = () => {
   modal.classList.add("d-flex");
   modal.classList.remove("d-none");
+  document.querySelector("body").style.overflow = "hidden";
 };
 
 const closeModal = () => {
   modal.classList.add("d-none");
   modal.classList.remove("d-flex");
+  document.querySelector("body").style.overflow = "scroll";
 };
 
 const confirmDelete = (el) => {
@@ -292,6 +295,7 @@ const editComments = (e) => {
     paragraph =
       currTarget.parentElement.parentElement.previousElementSibling
         .lastElementChild;
+    console.log(paragraph);
     parent.append(form);
     formFocus(currTarget, comment, paragraph);
   }
