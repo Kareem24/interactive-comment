@@ -41,9 +41,9 @@ const createComment = function (users) {
 					</div>
 					
           <div class="votes-btn d-flex jc-sb ai-c">
-            <button type="button" class="upvote btn"><img src="./images/icon-plus.svg" alt="the plus icon for the upvote btn" /></button>
+            <button type="button" class="upvote btn"><img src="./images/icon-plus.svg" alt="the plus icon for the upvote btn" class="upvote"  /></button>
             <p class="vote">${score}</p>
-            <button type="button" class="downvote btn"><img src="./images/icon-minus.svg" alt="the minus image for downvote" /></button>
+            <button type="button" class="downvote btn"><img src="./images/icon-minus.svg" alt="the minus image for downvote" class="downvote"/></button>
           </div>
           <p class="comment text"><span class='mention-user'>${
             replyingTo ? "@" : ""
@@ -103,17 +103,74 @@ const loadPage = (data) => {
     singlePost.insertAdjacentHTML("beforeend", repliedComment);
   });
 };
+const upVote = (e) => {
+  const currTarget = e.target;
+  let id;
+  if (currTarget.classList.contains("upvote")) {
+    const data = getFromStorage();
+    const parent =
+      currTarget.parentElement.parentElement.parentElement.parentElement;
+    const el = parent.parentElement;
+
+    id = parent.dataset.id;
+    const { comments } = data;
+    const increase = (post) => {
+      const addVote =
+        post.find((comment) => comment.id.toString() === id).score + 1;
+      post.find((comment) => comment.id.toString() === id).score = addVote;
+      setToStorage(data);
+      const score = currTarget.parentElement.nextElementSibling;
+      score.textContent = addVote;
+    };
+
+    if (el.classList.contains("post-interaction")) {
+      increase(comments);
+    }
+    if (el.classList.contains("reply-comment")) {
+      const replies = comments.map((comment) => comment.replies).flat();
+      increase(replies);
+    }
+  }
+};
+const downVote = (e) => {
+  const data = getFromStorage();
+  let id;
+  const { comments } = data;
+
+  const currTarget = e.target;
+  if (currTarget.classList.contains("downvote")) {
+    const parent =
+      currTarget.parentElement.parentElement.parentElement.parentElement;
+    const el = parent.parentElement;
+    id = parent.dataset.id;
+    const decrease = (post) => {
+      const subVote =
+        post.find((comment) => comment.id.toString() === id).score - 1;
+      if (subVote < 0) return;
+      post.find((comment) => comment.id.toString() === id).score = subVote;
+      setToStorage(data);
+      const score = currTarget.parentElement.previousElementSibling;
+      score.textContent = subVote;
+    };
+
+    if (el.classList.contains("post-interaction")) {
+      decrease(comments);
+    }
+    if (el.classList.contains("reply-comment")) {
+      const replies = comments.map((comment) => comment.replies).flat();
+      decrease(replies);
+    }
+  }
+};
 
 const showModal = () => {
   modal.classList.add("d-flex");
   modal.classList.remove("d-none");
-  document.querySelector("body").style.overflow = "hidden";
 };
 
 const closeModal = () => {
   modal.classList.add("d-none");
   modal.classList.remove("d-flex");
-  document.querySelector("body").style.overflow = "scroll";
 };
 
 const confirmDelete = (el) => {
@@ -355,5 +412,7 @@ commentContainer.addEventListener("click", (e) => {
   deleteComment(e);
   editComments(e);
   replyComment(e);
+  upVote(e);
+  downVote(e);
 });
 cancelDelete.addEventListener("click", closeModal);

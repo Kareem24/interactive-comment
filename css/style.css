@@ -236,7 +236,8 @@ body {
 	cursor: pointer;
 }
 
-@media (width <= 720px) {
+/* stylelint-disable-next-line media-feature-range-notation */
+@media screen and (max-width: 44em) {
 	.btn-cancel,
 	.btn-delete {
 		padding: 0.5rem 1rem;
