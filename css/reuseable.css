@@ -1,0 +1,73 @@
+:root {
+	--dark-blue: hsl(212deg 24% 26%);
+	--grayish-blue: hsl(211deg 10% 45%);
+	--light-gray: hsl(223deg 19% 93%);
+	--very-light-gray: hsl(228deg 33% 97%);
+	--white: hsl(0deg 0% 100%);
+	--moderate-blue: hsl(238deg 40% 52%);
+	--soft-red: hsl(358deg 79% 66%);
+	--light-grayish-blue: hsl(239deg 57% 85%);
+	--pale-red: hsl(357deg 100% 86%);
+	--rubik: "Rubik", sans-serif;
+}
+
+.d-flex {
+	display: flex;
+}
+
+.d-none {
+	display: none;
+}
+
+.ai-c {
+	align-items: center;
+}
+
+.jc-sb {
+	justify-content: space-between;
+}
+
+.jc-c {
+	justify-content: center;
+}
+
+.section-center {
+	margin: auto;
+}
+
+.bg-white {
+	background: var(--white);
+}
+
+.bg-light-gray {
+	background: var(--light-gray);
+}
+
+.user-image {
+	width: 48px;
+}
+
+.user-name {
+	color: var(--dark-blue);
+	font-size: 1.5rem;
+	font-weight: 700;
+}
+
+.text {
+	color: var(--grayish-blue);
+	font-family: var(--rubik);
+	font-weight: 400;
+}
+
+.comment {
+	margin: 12px auto;
+}
+
+.btn {
+	background: none;
+	border: none;
+	font-weight: 400;
+	font-size: 1rem;
+	color: var(--moderate-blue);
+	cursor: pointer;
+}

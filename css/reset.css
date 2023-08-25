@@ -1,4 +1,15 @@
 * {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
+	font-family: var(--rubik);
+}
+
+li {
+	list-style-type: none;
+}
+
+img,
+picture {
+	display: block;
 }
