@@ -226,7 +226,7 @@ const createFormUI = (isEdit) => {
 
   form.innerHTML = `<textarea
 					name="comment"
-					id=""
+					id="comment"
 					cols="30"
 					rows="10"
 					placeholder="Add comment"
