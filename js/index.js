@@ -32,8 +32,9 @@ const createComment = function (users) {
 							alt="${user.username} profile image"
 							class="user-image" />
 						<h3 class="user-name">${user.username}</h3>
-						<div class="tag ${user.username === "juliusomo" ? "d-flex" : "d-none"
-    } ai-c jc-c">
+						<div class="tag ${
+              user.username === "juliusomo" ? "d-flex" : "d-none"
+            } ai-c jc-c">
             <p>You</p>
             </div>
 						<p class="time text">${createdAt}</p>
@@ -44,16 +45,19 @@ const createComment = function (users) {
             <p class="vote">${score}</p>
             <button type="button" class="downvote btn"><img src="./images/icon-minus.svg" alt="the minus image for downvote" class="downvote"/></button>
           </div>
-          <p class="comment text"><span class='mention-user'>${replyingTo ? "@" : ""
-    }${replyingTo || ""}</span> <span> ${content}</span> </p>
+          <p class="comment text"><span class='mention-user'>${
+            replyingTo ? "@" : ""
+          }${replyingTo || ""}</span> <span> ${content}</span> </p>
 					<div class="buttons d-flex jc-sb ai-c">
             <div>
-						<button type="button" class="btn reply-btn  ai-c ${user.username === "juliusomo" ? "d-none" : "d-flex"
-    }">
+						<button type="button" class="btn reply-btn  ai-c ${
+              user.username === "juliusomo" ? "d-none" : "d-flex"
+            }">
 							<img src="./images/icon-reply.svg" alt="the reply icon" />Reply
 						</button></div>
-						<div class="owner-btn ${user.username === "juliusomo" ? "d-flex" : "d-none"
-    } ai-c">
+						<div class="owner-btn ${
+              user.username === "juliusomo" ? "d-flex" : "d-none"
+            } ai-c">
 							<button type="button" class="btn d-flex ai-c delete-btn"
 								><img
 									src="images/icon-delete.svg"
@@ -233,8 +237,9 @@ const createFormUI = (isEdit) => {
             alt="the account user image"
             class="user-image"
           />
-          <button type="submit" class="submit-comment">${isEdit ? "Update" : "Submit"
-    }</button>
+          <button type="submit" class="submit-comment">${
+            isEdit ? "Update" : "Submit"
+          }</button>
         </div>`;
   return form;
 };
