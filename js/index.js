@@ -1,5 +1,23 @@
 /* eslint-disable no-param-reassign */
-
+// const users = {
+//   tag: "developer",
+//   students: ["jay", "sussy", "john"],
+//   addTag: () => {
+//     this.students.forEach(function (student) {
+//       console.log(`${this.tag} ${student}`);
+//     });
+//   },
+// };
+// users.addTag();
+// console.log(users.addtag());
+// const users = {
+//   tag: "developer",
+//   students: ["jay", "sussy", "john"],
+//   addTag() {
+//     this.students.forEach((student) => console.log(`${this.tag} ${student}`);
+//   },
+// };
+// console.log(users.addTag())
 const getElement = function (selector, isList = false) {
   if (isList) return document.querySelectorAll(selector);
   return document.querySelector(selector);
@@ -16,13 +34,49 @@ const setToStorage = (data) =>
 
 const createElement = (element, ...className) => {
   const el = document.createElement(element);
-  className.forEach((singlecClass) => el.classList.add(singlecClass));
+  className.forEach((singleClass) => el.classList.add(singleClass));
   return el;
 };
 
+const calcDays = (date1, date2) =>
+  Math.round(Math.abs(date1 - date2) / (1000 * 60 * 60 * 24));
+
+const formatDate = (date) => {
+  const daysPassed = calcDays(new Date(), date);
+  const locale = navigator.language;
+  const options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "numeric",
+  };
+  if (daysPassed === 0) return "Today";
+  if (daysPassed === 0) return "Yesterday";
+
+  return new Intl.DateTimeFormat(locale, options).format(date);
+};
 const allCommentDiv = createElement("div", "post-interaction");
 const createComment = function (users) {
   const { content, score, user, createdAt, id, replyingTo } = users;
+  const createdDate = new Date(createdAt);
+  const globalDate = formatDate(createdDate);
+  // const locale = navigator.language;
+  // const options = {
+  //   year: "numeric",
+  //   month: "2-digit",
+  //   day: "numeric",
+  // };
+  // // console.log(date);
+  // let globalDate;
+  // const now = Date.now()
+  // const days = calcDays(now, date.getTime())
+  // if (days < 1) {
+  //   globalDate = 'now'
+  // }
+  // if (days > 1) {
+
+  //   globalDate = new Intl.DateTimeFormat(locale, options).format(date);
+  // }
+
   return `
     <div class="article-div" data-id= ${id}>
 				<article class="post bg-white">
@@ -32,12 +86,11 @@ const createComment = function (users) {
 							alt="${user.username} profile image"
 							class="user-image" />
 						<h3 class="user-name">${user.username}</h3>
-						<div class="tag ${
-              user.username === "juliusomo" ? "d-flex" : "d-none"
-            } ai-c jc-c">
+						<div class="tag ${user.username === "juliusomo" ? "d-flex" : "d-none"
+    } ai-c jc-c">
             <p>You</p>
             </div>
-						<p class="time text">${createdAt}</p>
+						<p class="time text">${globalDate}</p>
 					</div>
 					
           <div class="votes-btn d-flex jc-sb ai-c">
@@ -45,19 +98,16 @@ const createComment = function (users) {
             <p class="vote">${score}</p>
             <button type="button" class="downvote btn"><img src="./images/icon-minus.svg" alt="the minus image for downvote" class="downvote"/></button>
           </div>
-          <p class="comment text"><span class='mention-user'>${
-            replyingTo ? "@" : ""
-          }${replyingTo || ""}</span> <span> ${content}</span> </p>
+          <p class="comment text"><span class='mention-user'>${replyingTo ? "@" : ""
+    }${replyingTo || ""}</span> <span> ${content}</span> </p>
 					<div class="buttons d-flex jc-sb ai-c">
             <div>
-						<button type="button" class="btn reply-btn  ai-c ${
-              user.username === "juliusomo" ? "d-none" : "d-flex"
-            }">
+						<button type="button" class="btn reply-btn  ai-c ${user.username === "juliusomo" ? "d-none" : "d-flex"
+    }">
 							<img src="./images/icon-reply.svg" alt="the reply icon" />Reply
 						</button></div>
-						<div class="owner-btn ${
-              user.username === "juliusomo" ? "d-flex" : "d-none"
-            } ai-c">
+						<div class="owner-btn ${user.username === "juliusomo" ? "d-flex" : "d-none"
+    } ai-c">
 							<button type="button" class="btn d-flex ai-c delete-btn"
 								><img
 									src="images/icon-delete.svg"
@@ -237,9 +287,8 @@ const createFormUI = (isEdit) => {
             alt="the account user image"
             class="user-image"
           />
-          <button type="submit" class="submit-comment">${
-            isEdit ? "Update" : "Submit"
-          }</button>
+          <button type="submit" class="submit-comment">${isEdit ? "Update" : "Submit"
+    }</button>
         </div>`;
   return form;
 };
@@ -249,17 +298,11 @@ const createCommentObj = function (value, isReply = false, user = "") {
   const id = new Date().getTime().toString();
   const { currentUser } = data;
   const content = value;
-  const date = new Date();
-  const locale = navigator.language;
-  const options = {
-    year: "numeric",
-    month: "2-digit",
-    day: "numeric",
-  };
-  const globalDate = new Intl.DateTimeFormat(locale, options).format(date);
+  const date = new Date().toISOString();
+
   const newComment = {
     id,
-    createdAt: globalDate,
+    createdAt: date,
     score: 0,
     replies: [],
     content,
@@ -352,7 +395,6 @@ const editComments = (e) => {
     paragraph =
       currTarget.parentElement.parentElement.previousElementSibling
         .lastElementChild;
-    console.log(paragraph);
     parent.append(form);
     formFocus(currTarget, comment, paragraph);
   }
@@ -416,3 +458,9 @@ commentContainer.addEventListener("click", (e) => {
   downVote(e);
 });
 cancelDelete.addEventListener("click", closeModal);
+window.addEventListener("load", () => {
+  const loader = document.querySelector(".loading-screen");
+
+  loader.classList.add("hide");
+});
+
